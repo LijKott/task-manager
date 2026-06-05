@@ -19,3 +19,29 @@ pub fn add_task(conn: &Connection, title: &str) -> Result<()> {
     )?;
     Ok(())
 }
+
+use crate::models::Task;
+
+pub fn list_tasks(conn: &Connection) -> Result<Vec<Task>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, title, done FROM tasks ORDER BY id DESC"
+    )?;
+    let tasks = stmt.query_map([], |row| {
+        Ok(Task {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            done: row.get(2)?,
+        })
+    })?.filter_map(Result::ok).collect();
+    Ok(tasks)
+}
+
+pub fn mark_done(conn: &Connection, id: i64) -> Result<()> {
+    conn.execute("UPDATE tasks SET done = 1 WHERE id = ?1", [id])?;
+    Ok(())
+}
+
+pub fn delete_task(conn: &Connection, id: i64) -> Result<()> {
+    conn.execute("DELETE FROM tasks WHERE id = ?1", [id])?;
+    Ok(())
+}
