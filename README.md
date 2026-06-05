@@ -1,69 +1,71 @@
 # task-manager
 
-A fast, keyboard-driven CLI task manager written in Rust. Manage tasks from the terminal with a clean command interface or an interactive TUI, backed by a local SQLite database and optional file-based sync so your tasks follow you across machines.
+A terminal task manager that lives in your shell, syncs across machines without an account, and never touches the cloud unless you want it to.
 
-## Features
+<!-- Replace with an asciinema GIF showing: tm add → tm list → tm tui session -->
+![demo](./assets/demo.gif)
 
-- **CLI interface** — add, list, complete, and delete tasks with simple subcommands via `clap`
-- **Interactive TUI** — browse and manage tasks in a terminal UI built with `ratatui` and `crossterm`
-- **Persistent storage** — tasks are stored in a local SQLite database via `rusqlite`
-- **Timestamps** — creation and completion times tracked with `chrono`
-- **File-based sync** — export/import a portable JSON snapshot to sync across machines (no account required)
-- **Serializable data** — all models implement `serde` for seamless JSON round-trips
+**[Install from crates.io](https://crates.io/crates/task-manager)**
 
-## Installation
+---
 
-### From crates.io
+## Quick start
 
 ```sh
 cargo install task-manager
+tm add "my first task"
+tm list
 ```
 
-### From source
+That's it. Tasks persist to a local SQLite database in your home directory.
+
+---
+
+## Features
+
+- Add, complete, and delete tasks from a single `tm` command
+- Full-screen TUI (`tm tui`) with vim-style navigation — no mouse required
+- Timestamps on every task: created, updated, completed
+- File-based sync: dump to JSON, drop it anywhere (Dropbox, rsync, git), import on another machine
+- Conflict resolution on import: the task with the newer `updated_at` wins, no manual merging
+
+---
+
+## How to run it locally
+
+Requires **Rust 1.77+** (uses the 2024 edition). No system dependencies — SQLite is bundled.
 
 ```sh
 git clone https://github.com/lijkott/task-manager
 cd task-manager
+cargo run -- add "test task"
+```
+
+To build an optimized release binary and put it on your PATH:
+
+```sh
 cargo install --path .
 ```
 
+---
+
 ## Usage
 
-### CLI commands
-
 ```sh
-# Add a new task
-tm add "Write the sync module"
+tm add "task description"          # add a task
+tm add "urgent thing" --priority high
+tm list                            # all tasks
+tm list --pending                  # incomplete only
+tm done <id>                       # mark complete
+tm delete <id>                     # remove
 
-# Add a task with a priority tag
-tm add "Fix critical bug" --priority high
+tm sync export --out ~/sync/tasks.json   # export snapshot
+tm sync import --from ~/sync/tasks.json  # merge into local db
 
-# List all tasks
-tm list
-
-# List only pending tasks
-tm list --pending
-
-# Mark a task as done
-tm done <id>
-
-# Delete a task
-tm delete <id>
-
-# Sync: export tasks to a JSON file
-tm sync export --out ~/Dropbox/tasks.json
-
-# Sync: import tasks from a JSON file
-tm sync import --from ~/Dropbox/tasks.json
+tm tui                             # open interactive UI
 ```
 
-### Interactive TUI
-
-Launch the full-screen terminal UI:
-
-```sh
-tm tui
-```
+### TUI keybindings
 
 | Key | Action |
 |-----|--------|
@@ -74,33 +76,28 @@ tm tui
 | `s` | Open sync menu |
 | `q` | Quit |
 
-## Sync strategy
+---
 
-Sync is intentionally simple and dependency-free: tasks are serialized to a single JSON file that you drop anywhere — a shared folder, a USB drive, a dotfiles repo. On import, tasks are merged by ID; newer `updated_at` timestamps win conflicts.
+## How it works
 
-This means you can sync across machines using any file-sharing method you already use (Dropbox, Syncthing, rsync, git, etc.) without needing an account or network service.
+Most task apps either lock your data in a proprietary format or require a sync service with an account. This one stores everything in a local SQLite file — one file, portable, readable by any SQLite client if you ever want out.
 
-## Tech stack
+Sync is a deliberate non-feature in the networked sense. Instead of building a server, tasks serialize to a flat JSON snapshot via `serde`. You own the transport: point `--out` at a Dropbox folder, a git-tracked dotfiles repo, or an rsync target. On import, records merge by task ID and the `updated_at` timestamp breaks ties — so editing the same task on two machines picks the most recent version without a conflict prompt. This keeps the binary stateless and the sync logic under 50 lines.
 
-| Crate | Role |
-|-------|------|
-| [`clap`](https://crates.io/crates/clap) | Argument parsing with derive macros |
-| [`rusqlite`](https://crates.io/crates/rusqlite) | Embedded SQLite storage (bundled feature) |
-| [`serde`](https://crates.io/crates/serde) + [`serde_json`](https://crates.io/crates/serde_json) | Model serialization for sync |
-| [`ratatui`](https://crates.io/crates/ratatui) | Terminal UI rendering |
-| [`crossterm`](https://crates.io/crates/crossterm) | Cross-platform terminal input/output |
-| [`chrono`](https://crates.io/crates/chrono) | Timestamps with serde support |
+The TUI is built with `ratatui` on top of `crossterm` for cross-platform terminal handling. State is kept in a single `App` struct that the event loop mutates; the render pass is a pure read of that struct, which makes it straightforward to test render output separately from input handling.
 
-## Project structure
+---
 
-```
-src/
-  main.rs       # Entry point, CLI dispatch
-  commands.rs   # Clap command definitions and handlers
-  db.rs         # SQLite schema, queries, migrations
-  models.rs     # Task struct and serde impls
-  tui.rs        # Ratatui app loop and keybindings
-```
+## Credits
+
+- [clap](https://crates.io/crates/clap) — argument parsing
+- [rusqlite](https://crates.io/crates/rusqlite) — embedded SQLite (bundled feature so no system install needed)
+- [serde](https://crates.io/crates/serde) + [serde_json](https://crates.io/crates/serde_json) — sync serialization
+- [ratatui](https://crates.io/crates/ratatui) — TUI framework
+- [crossterm](https://crates.io/crates/crossterm) — cross-platform terminal I/O
+- [chrono](https://crates.io/crates/chrono) — timestamps with serde support
+
+---
 
 ## License
 
