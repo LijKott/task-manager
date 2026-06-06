@@ -1,7 +1,13 @@
 [package]
 name = "task-manager"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
+description = "A simple CLI task manager with a terminal UI"
+license = "MIT"
+repository = "https://github.com/lijkott/task-manager"
+readme = "README.md"
+keywords = ["cli", "task", "tui", "productivity"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
