@@ -36,12 +36,23 @@ pub fn list_tasks(conn: &Connection) -> Result<Vec<Task>> {
     Ok(tasks)
 }
 
-pub fn mark_done(conn: &Connection, id: i64) -> Result<()> {
-    conn.execute("UPDATE tasks SET done = 1 WHERE id = ?1", [id])?;
+pub fn toggle_done(conn: &Connection, id: i64) -> Result<()> {
+    conn.execute(
+        "UPDATE tasks SET done = CASE WHEN done = 1 THEN 0 ELSE 1 END WHERE id = ?1",
+        [id],
+    )?;
     Ok(())
 }
 
 pub fn delete_task(conn: &Connection, id: i64) -> Result<()> {
     conn.execute("DELETE FROM tasks WHERE id = ?1", [id])?;
+    Ok(())
+}
+
+pub fn reset(conn: &Connection) -> Result<()> {
+    conn.execute_batch("
+        DELETE FROM tasks;
+        DELETE FROM sqlite_sequence WHERE name='tasks';
+    ")?;
     Ok(())
 }

@@ -19,6 +19,7 @@ enum Commands {
     Done { id: i64 },
     Delete { id: i64 },
     Tui,
+    Reset,
 }
 
 fn main() {
@@ -31,6 +32,7 @@ fn main() {
         Some(Commands::Done { id }) => commands::done(&conn, id),
         Some(Commands::Delete { id }) => commands::delete(&conn, id),
         Some(Commands::Tui) => tui::run(&conn).expect("TUI failed"),
+        Some(Commands::Reset) => commands::reset(&conn),
         None => tui::run(&conn).expect("TUI failed"),
     }
 }

@@ -80,10 +80,20 @@ fn draw(frame: &mut Frame, app: &App) {
 
     frame.render_stateful_widget(list, chunks[0], &mut state);
 
-    //Help
-    let help = ratatui::widgets::Paragraph::new("a: add d: done x: delete q: quit")
-        .block(Block::default().borders(Borders::ALL));
-    frame.render_widget(help, chunks[1]);
+    //Bottom bar
+    match app.mode {
+        Mode::Adding => {
+            let input = ratatui::widgets::Paragraph::new(format!("Add task: {}", app.input))
+                .block(Block::default().borders(Borders::ALL).title(" New Task "))
+                .style(Style::default().fg(Color::Yellow));
+            frame.render_widget(input, chunks[1]);
+        }
+        Mode::Normal => {
+            let help = ratatui::widgets::Paragraph::new("a: add d: done x: delete r: reset q: quit")
+                .block(Block::default().borders(Borders::ALL));
+            frame.render_widget(help, chunks[1]);
+        }
+    }
 }
 
 pub fn run(conn: &Connection) -> Result<(), Box<dyn std::error::Error>> {
@@ -108,7 +118,7 @@ pub fn run(conn: &Connection) -> Result<(), Box<dyn std::error::Error>> {
                     KeyCode::Char('a') => app.mode = Mode::Adding,
                     KeyCode::Char('d') => {
                         if let Some(task) = app.tasks.get(app.selected) {
-                            db::mark_done(&conn, task.id).ok();
+                            db::toggle_done(&conn, task.id).ok();
                             app.tasks = db::list_tasks(&conn).unwrap_or_default();
                         }
                     }
@@ -117,6 +127,13 @@ pub fn run(conn: &Connection) -> Result<(), Box<dyn std::error::Error>> {
                             db::delete_task(&conn, task.id).ok();
                             app.tasks = db::list_tasks(&conn).unwrap_or_default();
                             if app.selected > 0 { app.selected -= 1; }
+                        }
+                    }
+                    KeyCode::Char('r') => {
+                        if let Some(_task) = app.tasks.get(app.selected) {
+                            db::reset(&conn).ok();
+                            app.tasks = db::list_tasks(&conn).unwrap_or_default();
+                            app.selected = 0;
                         }
                     }
                     _ => {}

@@ -21,8 +21,8 @@ pub fn list(conn: &Connection) {
 }
 
 pub fn done(conn: &Connection, id: i64) {
-    match db::mark_done(conn, id) {
-        Ok(_) => println!("Task {} marked as done", id),
+    match db::toggle_done(conn, id) {
+        Ok(_) => println!("Task {} toggled", id),
         Err(e) => println!("Error: {}", e),
     }
 }
@@ -30,6 +30,13 @@ pub fn done(conn: &Connection, id: i64) {
 pub fn delete(conn: &Connection, id: i64) {
     match db::delete_task(conn, id) {
         Ok(_) => println!("Task {} deleted", id),
+        Err(e) => println!("Error: {}", e),
+    }
+}
+
+pub fn reset(conn: &Connection) {
+    match db::reset(conn) {
+        Ok(_) => println!("Database reset"),
         Err(e) => println!("Error: {}", e),
     }
 }
