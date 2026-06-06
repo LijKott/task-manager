@@ -9,6 +9,10 @@ readme = "README.md"
 keywords = ["cli", "task", "tui", "productivity"]
 categories = ["command-line-utilities"]
 
+[[bin]]
+name = "tsk"
+path = "src/main.rs"
+
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
@@ -17,7 +21,3 @@ rusqlite = { version = "0.31", features = ["bundled"] }
 ratatui = "0.26"
 crossterm = "0.27"
 chrono = { version = "0.4", features = ["serde"] }
-
-[[bin]]
-name = "tsk"
-path = "src/main.rs"

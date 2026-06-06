@@ -36,13 +36,23 @@ jobs:
       - name: List build output
         run: ls target/${{ matrix.target }}/release/
 
+      - name: Rename binary (Unix)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        run: mv target/${{ matrix.target }}/release/tsk tsk-${{ matrix.target }}
+
+      - name: Rename binary (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: mv target/${{ matrix.target }}/release/tsk.exe tsk-${{ matrix.target }}.exe
+
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: tsk-${{ matrix.target }}
           path: |
-            target/${{ matrix.target }}/release/tsk
-            target/${{ matrix.target }}/release/tsk.exe
+            tsk-${{ matrix.target }}
+            tsk-${{ matrix.target }}.exe
           if-no-files-found: warn
 
   release:
@@ -58,7 +68,7 @@ jobs:
           path: artifacts
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: artifacts/**/*
         env:
