@@ -2,23 +2,14 @@
 
 A terminal task manager that stores tasks locally in SQLite and never touches the cloud.
 
-[![asciicast](https://asciinema.org/a/CGUIVE0KJ74DIBwy.svg)](https://asciinema.org/a/CGUIVE0KJ74DIBwy)
+![demo](https://asciinema.org/a/CGUIVE0KJ74DIBwy.svg)
 
 ---
 
 ## Quick start
 
 ```sh
-git clone https://github.com/lijkott/task-manager
-cd task-manager
-cargo run -- add "my first task"
-cargo run -- list
-```
-
-Or build and install the binary:
-
-```sh
-cargo install --path .
+cargo install task-manager
 task-manager add "my first task"
 task-manager list
 ```
