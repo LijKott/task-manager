@@ -2,16 +2,16 @@
 
 A terminal task manager that stores tasks locally in SQLite and never touches the cloud.
 
-![demo](https://asciinema.org/a/CGUIVE0KJ74DIBwy.svg)
+![demo](./assets/demo.gif)
 
 ---
 
 ## Quick start
 
 ```sh
-cargo install task-manager
-task-manager add "my first task"
-task-manager list
+cargo install task-manager-kotter
+task-manager-kotter add "my first task"
+task-manager-kotter list
 ```
 
 Tasks persist to a local SQLite database in your project directory.
@@ -21,7 +21,7 @@ Tasks persist to a local SQLite database in your project directory.
 ## Features
 
 - Add, list, complete, and delete tasks from a single command
-- Full-screen TUI (`task-manager tui`) with arrow-key navigation
+- Full-screen TUI (`task-manager-kotter tui`) with arrow-key navigation
 - Toggle tasks done/undone — flip the status of any task at any time
 - Reset the entire task list with one command
 - No account, no network, no system dependencies — SQLite is bundled
@@ -45,15 +45,15 @@ Running without a subcommand opens the TUI directly.
 ## Usage
 
 ```sh
-task-manager add "task description"   # add a task
-task-manager list                     # list all tasks
-task-manager done <id>                # toggle task complete/incomplete
-task-manager delete <id>              # remove a task
-task-manager reset                    # delete all tasks
-task-manager tui                      # open interactive UI
+task-manager-kotter add "task description"   # add a task
+task-manager-kotter list                     # list all tasks
+task-manager-kotter done <id>                # toggle task complete/incomplete
+task-manager-kotter delete <id>              # remove a task
+task-manager-kotter reset                    # delete all tasks
+task-manager-kotter tui                      # open interactive UI
 ```
 
-Running `task-manager` with no arguments also opens the TUI.
+Running `task-manager-kotter` with no arguments also opens the TUI.
 
 ### TUI keybindings
 
