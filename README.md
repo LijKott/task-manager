@@ -137,6 +137,19 @@ The TUI is built with `ratatui` on top of `crossterm` for cross-platform termina
 
 ---
 
+## AI Disclosure
+
+This project was built with assistance from [Claude](https://claude.ai) (Anthropic) in the following ways:
+
+- **Reference** — used as a search engine when stuck on specific problems
+- **Learning** — helped explain Rust concepts I hadn't encountered yet
+- **Debugging** — helped diagnose errors when I wasn't sure what went wrong
+- **Docs & CI** — assisted with writing this README and the GitHub Actions release workflow
+
+All core logic, architecture decisions, and features were written and driven by me.
+
+---
+
 ## License
 
 MIT
