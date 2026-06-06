@@ -33,11 +33,17 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
+      - name: List build output
+        run: ls target/${{ matrix.target }}/release/
+
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: tsk-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/${{ matrix.binary }}
+          path: |
+            target/${{ matrix.target }}/release/tsk
+            target/${{ matrix.target }}/release/tsk.exe
+          if-no-files-found: warn
 
   release:
     name: Create Release
