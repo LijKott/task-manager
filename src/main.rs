@@ -1,15 +1,36 @@
 mod db;
 mod models;
 mod commands;
+mod tui;
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+#[command(name= "task-manager", about = "A simple CLI task manager")]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Add { title: String },
+    List,
+    Done { id: i64 },
+    Delete { id: i64 },
+    Tui,
+}
 
 fn main() {
+    let cli = Cli::parse();
     let conn = db::open().expect("Failed to open database");
 
-    db::mark_done(&conn, 1).expect("Failed to mark done");
-    db::delete_task(&conn, 2).expect("Failed to delete task");
-
-    let tasks = db::list_tasks(&conn).expect("Failed to list tasks");
-    for task in tasks {
-        println!("{}: {} [{}]", task.id, task.title, if task.done { "x" } else { "" });
+    match cli.command {
+        Some(Commands::Add { title }) => commands::add(&conn, &title),
+        Some(Commands::List) => commands::list(&conn),
+        Some(Commands::Done { id }) => commands::done(&conn, id),
+        Some(Commands::Delete { id }) => commands::delete(&conn, id),
+        Some(Commands::Tui) => tui::run(&conn).expect("TUI failed"),
+        None => tui::run(&conn).expect("TUI failed"),
     }
 }
