@@ -12,7 +12,15 @@ A terminal task manager that stores tasks locally in SQLite and never touches th
 
 ```sh
 cargo install task-manager-kotter
+tsk add "my first task"
+tsk list
 ```
+
+> **Note:** If `tsk` isn't found after installing, add Cargo's bin directory to your PATH. Add this to your `~/.bashrc` or `~/.zshrc`:
+> ```sh
+> export PATH="$HOME/.cargo/bin:$PATH"
+> ```
+> Then run `source ~/.bashrc` (or `~/.zshrc`) to reload it.
 
 **Via pre-built binary** (no Rust required):
 
@@ -21,21 +29,41 @@ cargo install task-manager-kotter
    - `tsk-x86_64-apple-darwin` — macOS (Intel)
    - `tsk-aarch64-apple-darwin` — macOS (Apple Silicon)
    - `tsk-x86_64-pc-windows-msvc.exe` — Windows
-2. Make it executable and move it onto your PATH (Linux/macOS):
+2. Make it executable, rename it, and move it onto your PATH (Linux/macOS):
    ```sh
    chmod +x tsk-*
    mv tsk-* ~/.local/bin/tsk
    ```
 3. On Windows, rename it to `tsk.exe` and place it somewhere on your `PATH`.
 
-Tasks persist to a local SQLite database in your project directory.
+Tasks persist to a local SQLite database in your home directory.
+
+---
+
+## Uninstall
+
+**Cargo install:**
+```sh
+cargo uninstall task-manager-kotter
+```
+
+**Pre-built binary** (Linux/macOS):
+```sh
+rm $(which tsk)
+```
+
+**Pre-built binary** (Windows) — open a terminal and run:
+```sh
+where tsk
+```
+Then delete the file at the path it returns.
 
 ---
 
 ## Features
 
 - Add, list, complete, and delete tasks from a single command
-- Full-screen TUI (`task-manager-kotter tui`) with arrow-key navigation
+- Full-screen TUI (`tsk tui`) with arrow-key navigation
 - Toggle tasks done/undone — flip the status of any task at any time
 - Reset the entire task list with one command
 - No account, no network, no system dependencies — SQLite is bundled
@@ -59,15 +87,15 @@ Running without a subcommand opens the TUI directly.
 ## Usage
 
 ```sh
-task-manager-kotter add "task description"   # add a task
-task-manager-kotter list                     # list all tasks
-task-manager-kotter done <id>                # toggle task complete/incomplete
-task-manager-kotter delete <id>              # remove a task
-task-manager-kotter reset                    # delete all tasks
-task-manager-kotter tui                      # open interactive UI
+tsk add "task description"   # add a task
+tsk list                     # list all tasks
+tsk done <id>                # toggle task complete/incomplete
+tsk delete <id>              # remove a task
+tsk reset                    # delete all tasks
+tsk tui                      # open interactive UI
 ```
 
-Running `task-manager-kotter` with no arguments also opens the TUI.
+Running `tsk` with no arguments also opens the TUI.
 
 ### TUI keybindings
 
