@@ -10,7 +10,7 @@ use crossterm::{
 use std::io;
 use crate::models::Task;
 use crate::db;
-use crossterm::event::{ self, Event, KeyCode };
+use crossterm::event::{ self, Event, KeyCode, KeyEventKind };
 
 //App state
 enum Mode {
@@ -110,6 +110,7 @@ pub fn run(conn: &Connection) -> Result<(), Box<dyn std::error::Error>> {
         terminal.draw(|f| draw(f, &app))?;
         
         if let Event::Key(key) = event::read()? {
+            if key.kind != KeyEventKind::Press { continue; }
             match app.mode {
                 Mode::Normal => match key.code {
                     KeyCode::Char('q') => break,
