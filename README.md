@@ -8,11 +8,25 @@ A terminal task manager that stores tasks locally in SQLite and never touches th
 
 ## Quick start
 
+**Via cargo:**
+
 ```sh
 cargo install task-manager-kotter
-task-manager-kotter add "my first task"
-task-manager-kotter list
 ```
+
+**Via pre-built binary** (no Rust required):
+
+1. Download the binary for your platform from the [latest release](https://github.com/lijkott/task-manager/releases/latest):
+   - `tsk-x86_64-unknown-linux-gnu` — Linux
+   - `tsk-x86_64-apple-darwin` — macOS (Intel)
+   - `tsk-aarch64-apple-darwin` — macOS (Apple Silicon)
+   - `tsk-x86_64-pc-windows-msvc.exe` — Windows
+2. Make it executable and move it onto your PATH (Linux/macOS):
+   ```sh
+   chmod +x tsk-*
+   mv tsk-* ~/.local/bin/tsk
+   ```
+3. On Windows, rename it to `tsk.exe` and place it somewhere on your `PATH`.
 
 Tasks persist to a local SQLite database in your project directory.
 
